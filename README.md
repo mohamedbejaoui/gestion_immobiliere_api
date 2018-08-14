@@ -19,6 +19,26 @@ Créer un microservice avec une API REST qui permet aux utilisateurs de réalise
 - Framework: Flask
 - Base de données: **relationnelle** en utilisant le module **SQLAlchemy** de Python
 
+En particulier, on le code contient deux tables:
+
+- La table **Utilisateur**:
+    - id (***primary key***)
+    - nom
+    - prenom
+    - date_naissance
+    - pseudo (***unique***)
+    - password
+
+- La table **Bien_Immobilier**:
+    - id
+    - nom
+    - description
+    - type_bien
+    - ville
+    - pieces
+    - carac_pieces
+    - proprietaire_id (***foreign key*** references **id** in **Utilisateur**)
+
 ## Conditions préalables:
 Pour pouvoir faire fonctionner le programme localement, On va utiliser les logiciels suivants: (Vous devez donc installer ce que vous manque )
 
