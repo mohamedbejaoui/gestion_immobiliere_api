@@ -9,7 +9,7 @@ Ce projet a pour but de créer un ensemble de microservices qui doivent permetre
 
 - Un utilisateur peut consulter les biens disponibles sur la plateforme **uniquement** pour une **ville particulière**.
 
-- Un utilisateur peut renseigner / modifier ses informations personnelles sur la plateforme (nom, prénom, date de naissance). **En revanche**, il ne peut ni accéeder ni modifier les informations des autres utilisateurs.
+- Un utilisateur peut renseigner / modifier ses informations personnelles sur la plateforme (nom, prénom, date de naissance). **En revanche**, il ne peut ni accéeder à ni modifier les informations des autres utilisateurs.
 
 #### Objectif:
 Créer un microservice avec une API REST qui permet aux utilisateurs de réaliser toutes les fonctionnalités citées ci-dessus. Je ne vais pas développer une interface pour ce projet.
@@ -35,33 +35,34 @@ Le code python qui contient toutes les fonctions nécessaires au fonctionnement 
 -  Une fois que vous avez téléchargé tous les fichiers présents dans le repository(sauf le fichier images qui sert que pour le Readme) en dessus de Readme, mettez les dans le même chemin. Ensuite, ouvrez l'invite des commande et assurez vous que vous travaillez dans le chemin qui contient vos fichiers téléchargés.
 
 - Tapez les commandes suivantes:
-'''
-python
-from app import db
-db.create_all()
-exit()
-'''
+```
+  python
+  from app import db
+  db.create_all()
+  exit()
+```
+
 Ceci permet de créer les deux tables présentes dans le code app.py; la table **Utilisateur** et la table **Bien_Immobilier**.
 
 ![](https://github.com/mohamedbejaoui/gestion_immobiliere_api/blob/master/images/image1.PNG)
 
 Pour tester que vous avez bien créer les deux tables, tapez les commandes suivantes:
-'''
+```
 sqlite3 test.db
 .tables
 .exit
-'''
+```
 En fait, les deux tables crées sont stockés dans test.db qui se trouve maintenant dans votre
 chemin de travail.
 
-IMAGE2 !!!
+![](https://github.com/mohamedbejaoui/gestion_immobiliere_api/blob/master/images/image2.PNG)
 
 - Maintenant, on doit lancer notre serveur. Pour cela, tapez la commande suivante toujours dans l'invite des commandes:
-'''
+```
 python app.py
-'''
+```
 
-IMAGE3 !!!
+![](https://github.com/mohamedbejaoui/gestion_immobiliere_api/blob/master/images/image3.PNG)
 
 - Le serveur étant lancé, nous pouvons maintenant commencer à envoyer les requêtes. Pour cela, ouvrez **Git Bash**.
 
@@ -73,38 +74,38 @@ IMAGE3 !!!
   - *pseudo:* benoitdurand
   - *password:* 12345
 
-  Pour envoyer la requête, taper le code suivant dans Git Bash. D'ailleurs, toutes les requêtes qu'on va envoyer au serveur vont être tapées dans Git Bash. Ca s'appliquera donc pour tous les codes qui vont suivre.
-  '''
+Pour envoyer la requête, taper le code suivant dans Git Bash. D'ailleurs, toutes les requêtes qu'on va envoyer au serveur vont être tapées dans Git Bash. Ca s'appliquera donc pour tous les codes qui vont suivre.
+```
   curl -i -H "Content-Type: application/json" -X POST -d '{"nom":"Durand","prenom":"Benoit","date_naissance":"22-05-1994","pseudo":"benoitdurand","password":"12345"}' http://127.0.0.1:5000/user
-  '''
-  Vous devez avoir le message suivant:
+```
+Vous devez avoir le message suivant:
 
-  IMAGE4!!!
+![](https://github.com/mohamedbejaoui/gestion_immobiliere_api/blob/master/images/image4.PNG)
 
-  L'utilisateur est donc crée. Vous pouvez retenir son id pour une utilisation ultérieure.
+L'utilisateur est donc crée. Vous pouvez retenir son id pour une utilisation ultérieure.
 
-- Créons un autre utilisateur. Ca va être utile pour tester les contraintes.
+- Créons un autre utilisateur. Ca va être utile pour tester nos fonctionnalités.
   Par exemple, on va choisir comme informations personnelles:
   - *nom:* Martin
   - *prénom:* Thomas
   - *date de naissance:* 14-06-1991
   - *pseudo:* thomasmartin
   - *password:* azerty   
-  Tapez le code suivant:
-  '''
+Tapez donc le code suivant:
+```
   curl -i -H "Content-Type: application/json" -X POST -d '{"nom":"Martin","prenom":"Thomas","date_naissance":"14-06-1991","pseudo":"thomasmartin","password":"azerty"}' http://127.0.0.1:5000/user
-  '''
-  Vous devez avoir le message suivant:
+```
+Vous devez avoir le message suivant:
 
-  IMAGE5!!!
+![](https://github.com/mohamedbejaoui/gestion_immobiliere_api/blob/master/images/image5.PNG)
 
 - Avant de passer à la création de biens, un utilisateur doit d'abord se connecter au serveur avec son pseudo et son mot de passe. Pour cela, si M.Durand essaye de se connecter, il doit taper ce code:
-'''
+```
 curl -u benoitdurand:12345 -i http://127.0.0.1:5000/login
-'''
+```
 Vous recevez donc un token comme suit:
 
-IMAGE 6 !!!
+![](https://github.com/mohamedbejaoui/gestion_immobiliere_api/blob/master/images/image6.PNG)
 
 Ce token va gérer les contraintes citées dans la problématique comme on va voir plus tard. Il va permettre à M.Durand de rester connecté pendant **30 minutes**. Au delà de cette période, il va **expirer**.
 
@@ -117,75 +118,78 @@ On va choisir par exemple les caractéristiques suivantes:
   - *pieces:* 2
   - *Carac_piece:* un salon et une chambre
 Tapez donc le code suivant:
-'''
+```
 curl -i -H "Content-Type: application/json" -X POST -d '{"nom":"Appartement 36mcarre Paris 15eme","description":"A louer charmant appartement meuble de 36mcarre a proximite immediate de la gare Montparnasse","type_bien":"appartement","ville":"Paris","pieces":2,"carac_pieces":"un salon et une chambre"}' http://127.0.0.1:5000/bien_immobilier --header "x-access-token:"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZXhwIjoxNTM0MTkxNjk5fQ.EOxCREIhYMlduhKJ40sW6oEtXgae83u4PYbobR4obwQ""
-'''
+```
 Mettez le token que vous avez reçu au lieu de celui que j'ai mis dans le code.
 Vous devez avoir le message suivant:
 
-IMAGE7!!!
+![](https://github.com/mohamedbejaoui/gestion_immobiliere_api/blob/master/images/image7.PNG)
 
 Le bien est donc crée. Son id est 1.
 
 - Essayons de consulter ce bien. N'importe quel utilisateur peut consulter les biens; on n'a donc pas besoin de token. En revanche, on doit indiquer le nom de la ville. Dans notre cas, on n'a encore qu'un seul bien se trouvant à Paris.
 Tapez le code suivant:
-'''
+```
 curl -i http://127.0.0.1:5000/bien_immobilier/"Paris"
-'''
+```
+C'est clair que si vous voulez chercher les biens d'une autre ville, il suffit de remplacer "Paris" à la fin de la requête par la ville souhaitée.
+
 Vous devez voir le message suivant:
 
-IMAGE 8!!!
+![](https://github.com/mohamedbejaoui/gestion_immobiliere_api/blob/master/images/image8.PNG)
 
-- Essayons maintenant de cahnger par exemple *type_bien* de appartement à maison. On est connecté en tant que M.Durand qui est propriétaire du bien 1. On sera donc capable de le faire. Voici le code:
-'''
+- Essayons maintenant de changer par exemple *type_bien* de appartement à maison. On est connecté en tant que M.Durand qui est propriétaire du bien 1. On sera donc capable de le faire. Voici le code à taper
+```
 curl -i -H "Content-Type: application/json" -X PUT -d '{"type_bien":"maison"}' http://127.0.0.1:5000/bien_immobilier/1 --header "x-access-token:"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZXhwIjoxNTM0MTkxNjk5fQ.EOxCREIhYMlduhKJ40sW6oEtXgae83u4PYbobR4obwQ""
-'''
+```
+Si vous voulez faire d'autres modifications, vous les mettez après -d. Par exemple, si on veut changer aussi le nombre de pièces, on remplacera ``` -d '{"type_bien":"maison"}' ``` par ``` -d '{"type_bien":"maison", "pieces"=3}' ```
 
 Voud devez voir le message suivant:
 
-IMAGE 9!!!
+![](https://github.com/mohamedbejaoui/gestion_immobiliere_api/blob/master/images/image9.PNG)
 
 On a donc modifié les caractéristiques du bien. Vous pouvez le vérifier en consultant à nouveau la liste des biens à Paris.
 
 - Maintenant, on va se connecter en tant que M.Martin. On va essayer de modifier le bien de M.Durand pour vérifier que ça ne va pas fonctionner.
-Pour se connecter:
-'''
+Pour se connecter en tant que M.Martin, tapez:
+```
 curl -u thomasmartin:azerty -i http://127.0.0.1:5000/login
-'''
-Retenez le token et utilisez le dans la requête suivante:(On va essayer de changer *pieces* de 2 à 2)
-'''
+```
+Retenez le token et utilisez le dans la requête suivante:(On va essayer de changer *pieces* de 2 à 3)
+```
 curl -i -H "Content-Type: application/json" -X PUT -d '{"pieces":3}' http://127.0.0.1:5000/bien_immobilier/1 --header "x-access-token:"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MiwiZXhwIjoxNTM0MTkzMTYyfQ.WMN8YUHmnN1fWuQS4pBFJSX15Fta4yIn8AiRV9qtZSI""
-'''
+```
 Voici le message renvoyé:
 
-IMAGE 10 !!!
+![](https://github.com/mohamedbejaoui/gestion_immobiliere_api/blob/master/images/image10.PNG)
 
 On voit bien que la modification n'est pas autorisée car M.Martin n'est pas propriétaire du bien 1.
 
 - Il nous reste donc de voir comment modifier les informations personnelles d'un utilisateur.
-M.Martin va essayer de changer sa date de naissance comme suit:
-'''
+M.Martin va essayer de changer sa date de naissance. Pour cela tapez:
+```
 curl -i -H "Content-Type: application/json" -X PUT -d '{"date_naissance":"21-07-1995"}' http://127.0.0.1:5000/user/2 --header "x-access-token:"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MiwiZXhwIjoxNTM0MTkzMTYyfQ.WMN8YUHmnN1fWuQS4pBFJSX15Fta4yIn8AiRV9qtZSI""
-'''
+```
 Message renvoyé:
 
-IMAGE11!!!
+![](https://github.com/mohamedbejaoui/gestion_immobiliere_api/blob/master/images/image11.PNG)
 
-Les modifications sont donc apportées car l'id dans le requête correspond à l'id de M.Martin(2).
+Les modifications sont donc apportées car l'id dans le requête correspond à l'id de M.Martin qui est 2 (il était affiché lors de la création de l'utilisateur).
 
-Maintenant, M.Martin va essayer de changer les informations de M.Durand. IL suffit de changer l'id dans la requête comme suit:
-'''
+Maintenant, M.Martin va essayer de changer les informations de M.Durand. IL suffit de changer l'id à la fin du lien de la requête comme suit:
+```
 curl -i -H "Content-Type: application/json" -X PUT -d '{"date_naissance":"21-07-1995"}' http://127.0.0.1:5000/user/1 --header "x-access-token:"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MiwiZXhwIjoxNTM0MTkzMTYyfQ.WMN8YUHmnN1fWuQS4pBFJSX15Fta4yIn8AiRV9qtZSI""
-'''
+```
 Vous recevez donc ce message:
 
-IMAGE12!!!
+![](https://github.com/mohamedbejaoui/gestion_immobiliere_api/blob/master/images/image12.PNG)
 
 Comme prévu, les modifications sont interdites car M.Martin ne peut modifier que ses informations personnelles.
 
-- Vous pouvez tester encore les contraintes en ajoutant des utilisateurs et des biens et en envoyant des requêtes semblables à celles au dessus en modifiants quelque renseignements. Normalement, Vous disposer de tout ce que vous avez besoin pour faire tous les tests que vous souhaitez faire pour cette base de données.
+- Vous pouvez tester encore les contraintes en ajoutant des utilisateurs et des biens et en envoyant des requêtes semblables à celles au dessus. Normalement, Vous disposer de tout ce que vous avez besoin pour faire tous les tests que vous souhaitez faire pour cette base de données.
+
+### Merci pour votre attention!
 
 ## Auteurs
 **Mohamed Bejaoui**
-
-### Merci pour votre attention!
